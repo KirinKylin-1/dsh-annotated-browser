@@ -13,16 +13,213 @@
  * Annotation:
  *  - click an element, or drag a rectangle when the elements you mean are not
  *    one DOM node (the rectangle records the area plus what sits inside it);
- *  - picking stays on after a note is added — only the 退出标注 button or Esc
+ *  - picking stays on after a note is added — only the exit button or Esc
  *    leaves the mode;
  *  - the collected list is persisted per Session in localStorage, so closing
- *    the tab or reloading the page keeps it until 清空.
+ *    the tab or reloading the page keeps it until Clear.
+ *
+ * Every user-visible string comes from i18n.js through `t()`; the panel
+ * follows the GUI language (Settings → General) with no reload.
  */
 window.__ModuleLoader__.load({
   id: 'dsh-annotated-browser',
   factory: (require) => {
     const React = require('react')
     const h = React.createElement
+
+    /* Strings come from i18n.js, compiled into the block below by
+     * `npm run build:i18n` — the client module loader resolves only its module
+     * table and a revision-hashed chunk set, never a relative source file, so
+     * the dictionaries have to travel inside this bundle. Edit i18n.js, then run
+     * the build; never edit the generated block. */
+    /* >>> generated from i18n.js — do not edit by hand >>> */
+    const NS = "dsh-annotated-browser"
+    const DICTIONARIES = {
+      zh: {
+      "tab.browser": "浏览器",
+      "tab.annotate": "标注浏览器",
+      "guide.browser.title": "浏览器",
+      "guide.browser.desc": "带标注的浏览器：点元素或框选区域写备注，直接发进对话",
+      "guide.annotate.title": "标注浏览器",
+      "guide.annotate.desc": "带标注的浏览器：点元素/框选区域写备注，直接发进对话",
+      "strip.button": "标注",
+      "strip.buttonTitle": "在当前页面标注（打开标注视图）",
+      "toolbar.back": "后退",
+      "toolbar.forward": "前进",
+      "toolbar.reload": "刷新",
+      "toolbar.addressPlaceholder": "输入网址后回车",
+      "toolbar.open": "打开",
+      "toolbar.openExternal": "在系统浏览器中打开（交给浏览器处理，不影响本面板）",
+      "toolbar.annotate": "标注",
+      "toolbar.annotateStop": "退出标注",
+      "toolbar.annotateTitle": "标注：点元素，或拖拽框选区域",
+      "toolbar.annotateStopTitle": "退出标注（Esc）",
+      "toolbar.annotateDisabled": "跨域直接加载的页面无法标注",
+      "toolbar.markCount": "{count} 条",
+      "toolbar.clear": "清空",
+      "empty.title": "浏览器",
+      "empty.body": "在上方地址栏输入网址开始浏览；点「标注」可对页面元素或区域写备注。",
+      "annotate.hint": "点元素标注，或按住鼠标拖出区域 · Esc 退出",
+      "annotate.noteElement": "这个元素要怎么改？",
+      "annotate.noteRegion": "这块区域要怎么改？",
+      "annotate.add": "加入列表",
+      "annotate.cancel": "取消",
+      "annotate.drop": "退出标注",
+      "annotate.region": "区域 {width}×{height}@({x},{y})",
+      "annotate.regionElements": " · 覆盖 {count} 个元素",
+      "annotate.noted": "已加入第 {order} 条，可以继续点选（Esc 或「退出标注」结束）",
+      "marks.pending": "{count} 条待发送",
+      "marks.send": "发送到会话",
+      "marks.delete": "删除",
+      "marks.regionMeta": "区域 {width}×{height}",
+      "marks.regionElements": " · 框内 {count} 个元素",
+      "marks.sent": "已发送 {count} 条到当前会话",
+      "proxy.unreachable": "服务端打不开这个地址（它可能只在你这台机器上可访问，例如宿主机映射的端口）。",
+      "proxy.dismiss": "关闭提示",
+      "proxy.loadDirect": "直接加载（只读）",
+      "proxy.directNotice": "代理访问不到该地址，已改为直接加载：跨域页面无法标注，仅供查看",
+      "proxy.unavailable": "页面代理不可用：请确认插件 host 半已加载，且本机装有 Chrome/Chromium（或在插件配置里指定 browserExecutable）",
+      "error.crossOrigin": "无法访问页面 DOM（跨域），标注不可用",
+      "error.sendFailed": "发送失败：{reason}",
+      "error.noSessions": "会话服务不可用",
+      "error.sessionClosed": "当前会话已关闭",
+      "error.notSent": "消息未能发送",
+      "error.noSessionService": "sessions 服务不可用",
+      "message.header": "【内置浏览器批注】{count} 处 · {pageId}",
+      "message.page": "页面：{url}",
+      "message.region": "{index}. 区域 {size} @ ({x},{y}){inside}",
+      "message.regionInside": "（框内 {count} 个元素）",
+      "message.elementLine": "   - {selector}{text}",
+      "message.more": "   - …另有 {count} 个元素未列出",
+      "message.element": "{index}. {target}{text}",
+      "message.position": "   位置：{size} @ ({x},{y})",
+      "message.note": "   备注：{comment}",
+    },
+      en: {
+      "tab.browser": "Browser",
+      "tab.annotate": "Annotated browser",
+      "guide.browser.title": "Browser",
+      "guide.browser.desc": "Browser with annotation: pick an element or drag a region, write the note, send it into the conversation",
+      "guide.annotate.title": "Annotated browser",
+      "guide.annotate.desc": "Browser with annotation: pick an element or drag a region, write the note, send it into the conversation",
+      "strip.button": "Annotate",
+      "strip.buttonTitle": "Annotate this page (open the annotated view)",
+      "toolbar.back": "Back",
+      "toolbar.forward": "Forward",
+      "toolbar.reload": "Reload",
+      "toolbar.addressPlaceholder": "Enter a URL and press Enter",
+      "toolbar.open": "Open",
+      "toolbar.openExternal": "Open in the system browser (hands off to the browser, this panel is unaffected)",
+      "toolbar.annotate": "Annotate",
+      "toolbar.annotateStop": "Exit annotation",
+      "toolbar.annotateTitle": "Annotate: click an element, or drag to frame a region",
+      "toolbar.annotateStopTitle": "Exit annotation (Esc)",
+      "toolbar.annotateDisabled": "A cross-origin page loaded directly cannot be annotated",
+      "toolbar.markCount": "{count} notes",
+      "toolbar.clear": "Clear",
+      "empty.title": "Browser",
+      "empty.body": "Enter a URL in the address bar above to start browsing; click Annotate to leave a note on an element or a region.",
+      "annotate.hint": "Click an element to annotate, or drag to frame a region · Esc to exit",
+      "annotate.noteElement": "What should change about this element?",
+      "annotate.noteRegion": "What should change in this region?",
+      "annotate.add": "Add to list",
+      "annotate.cancel": "Cancel",
+      "annotate.drop": "Exit annotation",
+      "annotate.region": "Region {width}×{height}@({x},{y})",
+      "annotate.regionElements": " · covers {count} elements",
+      "annotate.noted": "Added as note {order}; keep picking (Esc or Exit annotation to stop)",
+      "marks.pending": "{count} notes pending",
+      "marks.send": "Send to conversation",
+      "marks.delete": "Delete",
+      "marks.regionMeta": "Region {width}×{height}",
+      "marks.regionElements": " · {count} elements inside",
+      "marks.sent": "Sent {count} notes to the current conversation",
+      "proxy.unreachable": "The server cannot reach this address (it may only be reachable from your machine, such as a host-mapped port).",
+      "proxy.dismiss": "Dismiss",
+      "proxy.loadDirect": "Load directly (read-only)",
+      "proxy.directNotice": "The proxy cannot reach this address, so it was loaded directly: a cross-origin page cannot be annotated, viewing only",
+      "proxy.unavailable": "Page proxy unavailable: check that the plugin host half is loaded and that Chrome/Chromium is installed on this machine (or set browserExecutable in the plugin config)",
+      "error.crossOrigin": "Cannot read the page DOM (cross-origin), annotation unavailable",
+      "error.sendFailed": "Send failed: {reason}",
+      "error.noSessions": "Session service unavailable",
+      "error.sessionClosed": "This conversation is closed",
+      "error.notSent": "The message was not sent",
+      "error.noSessionService": "sessions service unavailable",
+      "message.header": "[Built-in browser notes] {count} notes · {pageId}",
+      "message.page": "Page: {url}",
+      "message.region": "{index}. Region {size} @ ({x},{y}){inside}",
+      "message.regionInside": " ({count} elements inside)",
+      "message.elementLine": "   - {selector}{text}",
+      "message.more": "   - …{count} more elements not listed",
+      "message.element": "{index}. {target}{text}",
+      "message.position": "   Position: {size} @ ({x},{y})",
+      "message.note": "   Note: {comment}",
+    },
+    }
+    /* <<< generated from i18n.js <<< */
+
+    /* ----------------------------------------------------------------- i18n */
+
+    /**
+     * The panel is drawn from React and from one plain DOM button, so the
+     * translation function has to work in both. `locale.bind(NS)` returns a
+     * `t` that reads the live dictionary on every call, and the React half
+     * subscribes through the LocaleFace pair so a language switch re-renders
+     * without a reload.
+     *
+     * Until `ctx.locale` is in hand (or when this plugin runs on a host
+     * without the locale service) `t` reads the same dictionaries directly,
+     * defaulting to the browser's language. That keeps every string in one
+     * place whether or not the service exists.
+     */
+    let localeService = null
+    let boundT = null
+
+    function detectLanguage() {
+      const preferred = typeof navigator !== 'undefined'
+        ? String((navigator.languages && navigator.languages[0]) || navigator.language || 'en')
+        : 'en'
+      const base = preferred.toLowerCase().split('-')[0]
+      return Object.prototype.hasOwnProperty.call(DICTIONARIES, base) ? base : 'en'
+    }
+
+    function interpolate(template, params) {
+      if (!params) return template
+      return String(template).replace(/\{(\w+)\}/g, (match, name) =>
+        Object.prototype.hasOwnProperty.call(params, name) ? String(params[name]) : match,
+      )
+    }
+
+    /** Standalone lookup: used before the service exists and by the DOM button. */
+    function standaloneT(key, params) {
+      const language = detectLanguage()
+      const dict = DICTIONARIES[language] || DICTIONARIES.en
+      const template = dict[key] !== undefined ? dict[key] : DICTIONARIES.en[key]
+      if (template === undefined) return key
+      return interpolate(template, params)
+    }
+
+    /** Translate through the host locale service when present. */
+    function t(key, params) {
+      if (boundT) return boundT(key, params)
+      return standaloneT(key, params)
+    }
+
+    /**
+     * Re-render on a language switch. The locale snapshot reference is stable
+     * between changes and changes on every dictionary registration, which is
+     * exactly the semantics `useSyncExternalStore` asks for.
+     */
+    function useLocaleRevision() {
+      if (!localeService || typeof localeService.subscribe !== 'function' || typeof localeService.getSnapshot !== 'function') {
+        return 0
+      }
+      return React.useSyncExternalStore(
+        (listener) => localeService.subscribe(listener),
+        () => localeService.getSnapshot().revision,
+        () => localeService.getSnapshot().revision,
+      )
+    }
 
     const ID = 'dsh-annotated-browser'
     const KIND = 'annotate-browser'
@@ -258,6 +455,7 @@ window.__ModuleLoader__.load({
 
     function BrowserTitle(props) {
       const { useTabInfo } = props
+      useLocaleRevision()
       const tab = useTabInfo().tab
       const title = React.useSyncExternalStore(
         (listener) => pageTitles.subscribe(listener),
@@ -269,14 +467,14 @@ window.__ModuleLoader__.load({
           h('circle', { cx: 8, cy: 8, r: 6, stroke: 'currentColor', strokeWidth: 1.2 }),
           h('path', { d: 'M2 8h12M8 2c2 2 2 10 0 12M8 2c-2 2-2 10 0 12', stroke: 'currentColor', strokeWidth: 1.2 }),
         ),
-        h('span', { style: { overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } }, title || '浏览器'),
+        h('span', { style: { overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } }, title || t('tab.browser')),
       )
     }
 
     /* ------------------------------------------------- stock browser entry */
 
     /**
-     * A small 「标注」 button at the end of the built-in browser's tab strip.
+     * A small Annotate button at the end of the built-in browser's tab strip.
      *
      * It lives in the browser's own chrome — never over the page — and the
      * built-in browser keeps every feature it has. The button only hands the
@@ -327,8 +525,8 @@ window.__ModuleLoader__.load({
           const button = document.createElement('button')
           button.type = 'button'
           button.setAttribute(ENTRY, '')
-          button.textContent = '标注'
-          button.title = '在当前页面标注（打开标注视图）'
+          button.textContent = t('strip.button')
+          button.title = t('strip.buttonTitle')
           button.style.cssText = [
             'height:22px', 'margin:0 4px', 'padding:0 8px', 'flex:0 0 auto', 'align-self:center',
             'border:1px solid rgba(47,129,247,.5)', 'border-radius:11px',
@@ -366,6 +564,8 @@ window.__ModuleLoader__.load({
 
     function AnnotateBody(props) {
       const { useTabInfo, sessionId, sendPrompt, openBrowserTab } = props
+      /* Re-render on a language switch, before anything reads a string. */
+      useLocaleRevision()
       const tab = useTabInfo ? useTabInfo().tab : undefined
       const tabId = tab && tab.id
       const initial = (() => {
@@ -486,7 +686,7 @@ window.__ModuleLoader__.load({
         try {
           doc = frame.contentDocument
         } catch (accessError) {
-          setError('无法访问页面 DOM（跨域），标注不可用')
+          setError(t('error.crossOrigin'))
           return
         }
         if (!doc || !doc.documentElement) return
@@ -628,7 +828,7 @@ window.__ModuleLoader__.load({
               }
               setError('')
             } else if (!title && !directMode && /not found|forbidden|unauthorized/i.test(bodyText)) {
-              setError('页面代理不可用：请确认插件 host 半已加载，且本机装有 Chrome/Chromium（或在插件配置里指定 browserExecutable）')
+              setError(t('proxy.unavailable'))
             } else {
               setProxyFailed(false)
               setError('')
@@ -666,7 +866,7 @@ window.__ModuleLoader__.load({
         setPending(null)
         setNote('')
         setAnnotating(true)
-        setSent('已加入第 ' + order + ' 条，可以继续点选（Esc 或「退出标注」结束）')
+        setSent(t('annotate.noted', { order: order }))
         setTimeout(() => setSent(''), 3500)
       }
 
@@ -687,39 +887,45 @@ window.__ModuleLoader__.load({
         const list = ordered
         if (list.length === 0) return
         const lines = []
-        lines.push('【内置浏览器批注】' + list.length + ' 处 · ' + pageId)
-        lines.push('页面：' + url)
+        lines.push(t('message.header', { count: list.length, pageId: pageId }))
+        lines.push(t('message.page', { url: url }))
         lines.push('')
         list.forEach((mark, index) => {
           const t = mark.target || {}
           const n = index + 1
           if (t.kind === 'region') {
-            lines.push(n + '. 区域 ' + (t.rect ? t.rect.width + '×' + t.rect.height : '') + (t.rect ? ' @ (' + t.rect.x + ',' + t.rect.y + ')' : '') + (t.elements && t.elements.length ? '（框内 ' + (t.total || t.elements.length) + ' 个元素）' : ''))
+            lines.push(t('message.region', {
+            index: n,
+            size: t.rect ? t.rect.width + '×' + t.rect.height : '',
+            x: t.rect ? t.rect.x : '',
+            y: t.rect ? t.rect.y : '',
+            inside: t.elements && t.elements.length ? t('message.regionInside', { count: t.total || t.elements.length }) : '',
+          }))
             if (t.elements && t.elements.length) {
               t.elements.forEach((el) => {
-                lines.push('   - ' + (el.selector || el.tag) + (el.text ? ' 「' + el.text + '」' : ''))
+                lines.push(t('message.elementLine', { selector: el.selector || el.tag, text: el.text ? ' 「' + el.text + '」' : '' }))
               })
-              if (t.total && t.total > t.elements.length) lines.push('   - …另有 ' + (t.total - t.elements.length) + ' 个元素未列出')
+              if (t.total && t.total > t.elements.length) lines.push(t('message.more', { count: t.total - t.elements.length }))
             }
           } else {
             const quote = t.text ? ' 「' + t.text + '」' : ''
-            lines.push(n + '. ' + (t.selector || t.tag || 'element') + quote)
-            if (t.rect) lines.push('   位置：' + t.rect.width + '×' + t.rect.height + ' @ (' + t.rect.x + ',' + t.rect.y + ')')
+            lines.push(t('message.element', { index: n, target: t.selector || t.tag || 'element', text: quote }))
+            if (t.rect) lines.push(t('message.position', { size: t.rect.width + '×' + t.rect.height, x: t.rect.x, y: t.rect.y }))
           }
-          lines.push('   备注：' + mark.comment)
+          lines.push(t('message.note', { comment: mark.comment }))
         })
         const text = lines.join('\n')
         try {
-          if (typeof sendPrompt !== 'function') throw new Error('会话服务不可用')
+          if (typeof sendPrompt !== 'function') throw new Error(t('error.noSessions'))
           await sendPrompt(sessionId, text)
           setMarks([])
           setPending(null)
           setNote('')
-          setSent('已发送 ' + list.length + ' 条到当前会话')
+          setSent(t('marks.sent', { count: list.length }))
           saveMarks(sessionId, [])
           setTimeout(() => setSent(''), 4000)
         } catch (sendError) {
-          setError('发送失败：' + String(sendError && sendError.message ? sendError.message : sendError))
+          setError(t('error.sendFailed', { reason: String(sendError && sendError.message ? sendError.message : sendError) }))
         }
       }
 
@@ -753,22 +959,22 @@ window.__ModuleLoader__.load({
       }, [annotating])
 
       const toolbars = h('div', { className: '__dsh_ann_bar' },
-        h('button', { className: '__dsh_ann_btn', title: '后退', disabled: !canBack, onClick: () => goTo(cursor - 1) }, '←'),
-        h('button', { className: '__dsh_ann_btn', title: '前进', disabled: !canForward, onClick: () => goTo(cursor + 1) }, '→'),
-        h('button', { className: '__dsh_ann_btn', title: '刷新', onClick: () => setReloadKey((k) => k + 1) }, '⟳'),
+        h('button', { className: '__dsh_ann_btn', title: t('toolbar.back'), disabled: !canBack, onClick: () => goTo(cursor - 1) }, '←'),
+        h('button', { className: '__dsh_ann_btn', title: t('toolbar.forward'), disabled: !canForward, onClick: () => goTo(cursor + 1) }, '→'),
+        h('button', { className: '__dsh_ann_btn', title: t('toolbar.reload'), onClick: () => setReloadKey((k) => k + 1) }, '⟳'),
         h('input', {
           className: '__dsh_ann_addr',
           ref: addrRef,
           value: address,
-          placeholder: '输入网址后回车',
+          placeholder: t('toolbar.addressPlaceholder'),
           onChange: (event) => setAddress(event.target.value),
           onKeyDown: (event) => { if (event.key === 'Enter') go(event.currentTarget.value) },
           spellCheck: false,
         }),
-        h('button', { className: '__dsh_ann_btn __dsh_ann_primary', onClick: () => go(addrRef.current ? addrRef.current.value : address) }, '打开'),
+        h('button', { className: '__dsh_ann_btn __dsh_ann_primary', onClick: () => go(addrRef.current ? addrRef.current.value : address) }, t('toolbar.open')),
         h('button', {
           className: '__dsh_ann_btn',
-          title: '在系统浏览器中打开（交给浏览器处理，不影响本面板）',
+          title: t('toolbar.openExternal'),
           onClick: () => {
             const target = effectiveUrl || url
             if (target) window.open(target, '_blank', 'noopener,noreferrer')
@@ -778,18 +984,18 @@ window.__ModuleLoader__.load({
           className: '__dsh_ann_btn',
           'data-active': annotating ? 'true' : 'false',
           disabled: directMode && !sameOriginPage && !sameLoopbackSite,
-          title: directMode && !sameOriginPage && !sameLoopbackSite ? '跨域直接加载的页面无法标注' : (annotating ? '退出标注（Esc）' : '标注：点元素，或拖拽框选区域'),
+          title: directMode && !sameOriginPage && !sameLoopbackSite ? t('toolbar.annotateDisabled') : (annotating ? t('toolbar.annotateStopTitle') : t('toolbar.annotateTitle')),
           onClick: toggleMode,
-        }, annotating ? '退出标注' : '标注'),
-        marks.length > 0 ? h('span', { style: { color: '#57606a', fontSize: '12px' } }, marks.length + ' 条') : null,
-        marks.length > 0 ? h('button', { className: '__dsh_ann_btn', onClick: () => setMarks([]) }, '清空') : null,
+        }, annotating ? t('toolbar.annotateStop') : t('toolbar.annotate')),
+        marks.length > 0 ? h('span', { style: { color: '#57606a', fontSize: '12px' } }, t('toolbar.markCount', { count: marks.length })) : null,
+        marks.length > 0 ? h('button', { className: '__dsh_ann_btn', onClick: () => setMarks([]) }, t('toolbar.clear')) : null,
       )
 
       const frame = h('div', { className: '__dsh_ann_frame' },
         url === ''
           ? h('div', { className: '__dsh_ann_start' },
-              h('div', { className: '__dsh_ann_startTitle' }, '浏览器'),
-              h('div', null, '在上方地址栏输入网址开始浏览；点「标注」可对页面元素或区域写备注。'),
+              h('div', { className: '__dsh_ann_startTitle' }, t('empty.title')),
+              h('div', null, t('empty.body')),
             )
           : h('iframe', {
             ref: frameRef,
@@ -798,28 +1004,28 @@ window.__ModuleLoader__.load({
             title: 'annotate-browser',
             'data-dsh-ann-frame': '',
           }),
-        annotating ? h('div', { className: '__dsh_ann_hint' }, '点元素标注，或按住鼠标拖出区域 · Esc 退出') : null,
+        annotating ? h('div', { className: '__dsh_ann_hint' }, t('annotate.hint')) : null,
         proxyFailed && !directMode ? h('div', { className: '__dsh_ann_card', style: { borderColor: '#d1242f' } },
-          h('div', { className: '__dsh_ann_target' }, '服务端打不开这个地址（它可能只在你这台机器上可访问，例如宿主机映射的端口）。'),
+          h('div', { className: '__dsh_ann_target' }, t('proxy.unreachable')),
           h('div', { className: '__dsh_ann_actions' },
-            h('button', { className: '__dsh_ann_btn', onClick: () => setProxyFailed(false) }, '关闭提示'),
+            h('button', { className: '__dsh_ann_btn', onClick: () => setProxyFailed(false) }, t('proxy.dismiss')),
             h('button', {
               className: '__dsh_ann_btn __dsh_ann_primary',
               onClick: () => { setProxyFailed(false); setForceDirect(true) },
-            }, '直接加载（只读）'),
+            }, t('proxy.loadDirect')),
           ),
         ) : null,
-        forceDirect && !sameOriginPage ? h('div', { className: '__dsh_ann_hint', style: { background: 'rgba(209,36,47,.9)' } }, '代理访问不到该地址，已改为直接加载：跨域页面无法标注，仅供查看') : null,
+        forceDirect && !sameOriginPage ? h('div', { className: '__dsh_ann_hint', style: { background: 'rgba(209,36,47,.9)' } }, t('proxy.directNotice')) : null,
         pending ? h('div', { className: '__dsh_ann_card' },
           h('div', { className: '__dsh_ann_target' },
             pending.kind === 'region'
-              ? h('span', null, '区域 ' + pending.rect.width + '×' + pending.rect.height + '@(' + pending.rect.x + ',' + pending.rect.y + ')' + (pending.elements && pending.elements.length ? ' · 覆盖 ' + pending.elements.length + ' 个元素' : ''))
+              ? h('span', null, t('annotate.region', { width: pending.rect.width, height: pending.rect.height, x: pending.rect.x, y: pending.rect.y }) + (pending.elements && pending.elements.length ? t('annotate.regionElements', { count: pending.elements.length }) : ''))
               : h('span', null, h('code', null, pending.selector || pending.tag), pending.text ? ' 「' + pending.text.slice(0, 60) + '」' : ''),
           ),
           h('textarea', {
             autoFocus: true,
             value: note,
-            placeholder: pending.kind === 'region' ? '这块区域要怎么改？' : '这个元素要怎么改？',
+            placeholder: pending.kind === 'region' ? t('annotate.noteRegion') : t('annotate.noteElement'),
             onChange: (event) => setNote(event.target.value),
             onKeyDown: (event) => {
               if (event.key === 'Escape') dropPending()
@@ -827,8 +1033,8 @@ window.__ModuleLoader__.load({
             },
           }),
           h('div', { className: '__dsh_ann_actions' },
-            h('button', { className: '__dsh_ann_btn', onClick: dropPending }, '取消'),
-            h('button', { className: '__dsh_ann_btn __dsh_ann_primary', disabled: note.trim() === '', onClick: saveMark }, '加入列表'),
+            h('button', { className: '__dsh_ann_btn', onClick: dropPending }, t('annotate.cancel')),
+            h('button', { className: '__dsh_ann_btn __dsh_ann_primary', disabled: note.trim() === '', onClick: saveMark }, t('annotate.add')),
           ),
         ) : null,
       )
@@ -839,14 +1045,14 @@ window.__ModuleLoader__.load({
           h('div', { style: { flex: '1 1 auto', minWidth: 0 } },
             h('div', null, mark.comment),
             h('code', null, mark.target && mark.target.kind === 'region'
-              ? '区域 ' + mark.target.rect.width + '×' + mark.target.rect.height + (mark.target.elements && mark.target.elements.length ? ' · 框内 ' + (mark.target.total || mark.target.elements.length) + ' 个元素' : '')
+              ? t('marks.regionMeta', { width: mark.target.rect.width, height: mark.target.rect.height }) + (mark.target.elements && mark.target.elements.length ? t('marks.regionElements', { count: mark.target.total || mark.target.elements.length }) : '')
               : (mark.target && (mark.target.selector || mark.target.tag)) || ''),
           ),
-          h('button', { className: '__dsh_ann_btn', title: '删除', onClick: () => setMarks((all) => all.filter((m, i) => i !== index)) }, '×'),
+          h('button', { className: '__dsh_ann_btn', title: t('marks.delete'), onClick: () => setMarks((all) => all.filter((m, i) => i !== index)) }, '×'),
         )),
         h('footer', null,
-          h('span', { style: { color: '#57606a' } }, marks.length + ' 条待发送'),
-          h('button', { className: '__dsh_ann_btn __dsh_ann_primary', onClick: submit }, '发送到会话'),
+          h('span', { style: { color: '#57606a' } }, t('marks.pending', { count: marks.length })),
+          h('button', { className: '__dsh_ann_btn __dsh_ann_primary', onClick: submit }, t('marks.send')),
         ),
       )
 
@@ -862,9 +1068,33 @@ window.__ModuleLoader__.load({
     /* ------------------------------------------------------------------ apply */
 
     return {
-      inject: ['slots', 'sessions'],
+      inject: ['slots', 'sessions', 'locale'],
       apply(ctx) {
         ctx.effect(() => installStyles(), 'dsh-annotated-browser: styles')
+
+        /* ---------------------------------------------------------- locale
+         *
+         * Register the dictionaries under this plugin's own namespace and bind
+         * `t` to the live service, so a language switch in Settings reaches
+         * every string without a reload. `inject` guarantees `locale` is
+         * present; the guard only covers a host that mounted without it.
+         */
+        ctx.effect(() => {
+          const locale = ctx.get('locale')
+          if (!locale || typeof locale.register !== 'function') return () => {}
+          const disposers = Object.keys(DICTIONARIES).map((language) =>
+            locale.register(NS, language, DICTIONARIES[language]),
+          )
+          localeService = locale
+          boundT = locale.bind(NS)
+          return () => {
+            for (const dispose of disposers) {
+              try { dispose() } catch (error) {}
+            }
+            localeService = null
+            boundT = null
+          }
+        }, 'dsh-annotated-browser: locale dictionaries')
 
         /* The client half has no row config; the host owns the switch. */
         const modeReady = (async () => {
@@ -880,7 +1110,7 @@ window.__ModuleLoader__.load({
 
         const sendPrompt = async (sessionId, text) => {
           const sessions = ctx.get('sessions')
-          if (!sessions) throw new Error('sessions 服务不可用')
+          if (!sessions) throw new Error(t('error.noSessionService'))
           const conversation = sessions.scope(sessionId) && sessions.scope(sessionId).get('conversation')
           if (conversation) {
             await conversation.send(text)
@@ -888,9 +1118,9 @@ window.__ModuleLoader__.load({
           }
           const binding = sessions.binding(sessionId)
           const session = binding && binding.session
-          if (!session) throw new Error('当前会话已关闭')
+          if (!session) throw new Error(t('error.sessionClosed'))
           const result = await session.prompt([{ type: 'text', text }], 'queue')
-          if (!result || result.ok !== true) throw new Error('消息未能发送')
+          if (!result || result.ok !== true) throw new Error(t('error.notSent'))
         }
 
         ctx.inject(['sidebarRight', 'sidebarRightTabs'], async (sidebar) => {
@@ -898,8 +1128,8 @@ window.__ModuleLoader__.load({
            *
            *  - takeover (default): the plugin provides the `browser` type itself,
            *    so pages open straight into the annotatable view.
-           *  - side (takeover: false): the stock browser is untouched; a 标注
-           *    button in its tab strip hands the current URL over instead.
+           *  - side (takeover: false): the stock browser is untouched; an
+           *    Annotate button in its tab strip hands the current URL over.
            */
           const mode = await modeReady
           const takeover = !(mode && mode.takeover === false)
@@ -919,14 +1149,14 @@ window.__ModuleLoader__.load({
               kind: 'browser',
               multiple: true,
               keepMounted: true,
-              title: () => '浏览器',
+              title: () => t('tab.browser'),
               guide: [
                 {
                   id: 'annotate-browser',
                   commandId: 'browser.new',
                   order: 30,
-                  title: () => '浏览器',
-                  description: () => '带标注的浏览器：点元素或框选区域写备注，直接发进对话',
+                  title: () => t('tab.browser'),
+                  description: () => t('guide.browser.desc'),
                 },
               ],
             }
@@ -959,7 +1189,7 @@ window.__ModuleLoader__.load({
             kind: KIND,
             multiple: true,
             keepMounted: true,
-            title: () => '标注浏览器',
+            title: () => t('tab.annotate'),
             ...(takeover && tookOver
               ? {}
               : {
@@ -967,8 +1197,8 @@ window.__ModuleLoader__.load({
                     {
                       id: 'annotate-browser',
                       order: 40,
-                      title: () => '标注浏览器',
-                      description: () => '带标注的浏览器：点元素/框选区域写备注，直接发进对话',
+                      title: () => t('tab.annotate'),
+                      description: () => t('guide.annotate.desc'),
                     },
                   ],
                 }),

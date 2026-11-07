@@ -1,16 +1,19 @@
 {
   "name": "dsh-annotated-browser",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "type": "module",
   "description": "Annotation for the DSH sidebar browser: render pages through a same-origin host proxy, then click an element or drag a region and send the note into the conversation.",
   "exports": {
     ".": "./index.js",
     "./client": "./client.js",
+    "./i18n": "./i18n.js",
     "./package.json": "./package.json"
   },
   "files": [
     "index.js",
     "client.js",
+    "i18n.js",
+    "locale/*.json",
     "cordis.patch.yml",
     "README.md",
     "README.zh.md",
@@ -18,6 +21,7 @@
     "LICENSE"
   ],
   "dsh": {
+    "manifestVersion": 1,
     "bundle": {
       "patch": "./cordis.patch.yml"
     },
@@ -26,7 +30,8 @@
       "immediately": true,
       "inject": [
         "@deepseek-ai/dsh-client-ui-sidebar-right",
-        "@deepseek-ai/dsh-client-ui-session"
+        "@deepseek-ai/dsh-client-ui-session",
+        "@deepseek-ai/dsh-client-locale"
       ]
     }
   },
@@ -56,5 +61,9 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "scripts": {
+    "build:i18n": "node scripts/build-i18n.mjs",
+    "check:i18n": "node scripts/build-i18n.mjs --check"
   }
 }
