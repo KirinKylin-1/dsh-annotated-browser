@@ -14,25 +14,26 @@
 
 ---
 
-## What makes it different
+## What it solves
 
-Most "browser in a sidebar" plugins frame the remote page and stop there. That has two consequences nobody wants: sites that send `X-Frame-Options` or a CSP `frame-ancestors` render **blank**, and the frame stays **cross-origin**, so the GUI can never read its DOM — which makes annotation impossible.
+Saying "change *this* bit" about a real web page needs two things: **seeing the page**, and **naming the part you mean**. This plugin exists for those two things.
 
-This plugin renders the page in headless Chromium on the host and serves the executed HTML from the DSH origin. The frame is then same-origin, so:
+**More pages load properly.** Some sites declare through `X-Frame-Options` or a CSP `frame-ancestors` that they must not be embedded. Those declarations apply to pages framed directly from the remote URL, and this plugin does not take that route: it renders the page in headless Chromium on the host and serves the executed HTML from the DSH origin, so embedding restrictions do not come into play and the page displays normally.
 
-| | Stock sidebar browser | This plugin |
-|---|---|---|
-| Sites with `X-Frame-Options` / CSP | blank | **load** |
-| Read the page DOM from the GUI | impossible (cross-origin) | **allowed (same-origin)** |
-| Click an element and get its selector | — | **yes** |
-| Drag a region, get every element inside | — | **yes** |
-| Notes go into the conversation | — | **one message, in selection order** |
+**The page becomes readable.** Because the rendered result is served from the DSH origin, the panel and the page are **same-origin** — the precondition for annotation. Same-origin access to the DOM is what makes these possible:
 
-Three more things that are deliberate rather than incidental:
+- click an element and get its **selector** (`#id`, `data-testid`, or a CSS path walked up through its ancestors);
+- drag a region and get **every element inside it**, not just the outermost node;
+- record the visible text, the element's position, and your note together;
+- keep picking without stopping, then send everything as **one message in the order you picked it**.
 
-- **The built-in browser keeps working.** With `takeover: false` this plugin never replaces the `browser` tab type. Its shortcuts, "open in system browser", its history, and every other plugin that opens `browser` tabs behave exactly as before; this plugin only *adds* a separate annotated tab and a small hand-off button in the tab strip.
-- **Picking stays on.** Adding a note does not drop you out of annotation mode — you keep clicking until you press Esc. Notes are collected in one list and sent as a single message, so a page-wide review costs one turn, not twelve.
-- **Same-origin pages skip the proxy.** A page already served by this DSH (another plugin's page, say) is framed directly — cookies intact, no Chromium round-trip. If the proxy cannot reach a URL at all (a port mapped only on your machine), the panel falls back to **load directly (read-only)**: viewable, honestly labelled as not annotatable, instead of dead-ending on a blank frame.
+**It respects what you already have installed.** With `takeover: false` the plugin does not replace the `browser` tab type: shortcuts, "open in system browser", history, and every other plugin that opens `browser` tabs keep behaving exactly as before. It *adds* a separate annotated tab and a hand-off button in the tab strip.
+
+**A whole page in one turn.** Adding a note leaves you in picking mode, so you can keep going until you press Esc. Notes collect into one list and go out as a single message — a page-wide review costs one turn instead of a dozen.
+
+**No detour when it is already same-origin.** A page served by this DSH itself (another plugin's page, say) is framed directly: cookies intact, no extra Chromium pass.
+
+**Honest when it cannot work.** If an address is only reachable from your own machine (a port mapped locally, for example), the panel falls back to **load directly (read-only)**: the page still shows, and it says plainly that annotation is unavailable instead of leaving you with a blank frame to puzzle over.
 
 ## What it looks like
 

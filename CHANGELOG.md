@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.2
+
+- Rewrote both READMEs to lead with what the plugin does and the problems it
+  solves, instead of contrasting with other implementations. Same for the
+  plugin-page description and the catalog entry.
+
 ## 1.2.1
 
 - Ship two real screenshots (`assets/screenshot-1.png` Chinese UI,

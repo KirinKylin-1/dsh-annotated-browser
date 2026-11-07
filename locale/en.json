@@ -1,6 +1,6 @@
 {
   "meta": {
     "title": "Annotated Browser",
-    "description": "Pick an element or drag a region on a live page, write what should change, and send the notes into the conversation — with selectors, visible text and rectangles. Renders through the host so CSP-framed sites still load, without touching the built-in browser."
+    "description": "Click an element or drag a region on a live page, write what should change, and send the notes into the conversation with selectors, visible text and rectangles. Pages render on the host and are served same-origin, so plenty of sites load, and the built-in browser keeps every feature it has."
   }
 }
