@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.1
+
+- Ship two real screenshots (`assets/screenshot-1.png` Chinese UI,
+  `assets/screenshot-2.png` English UI) declared in `screenshots.json`, so
+  storefronts can show what the panel actually looks like.
+
 ## 1.2.0
 
 - **The panel speaks English and Chinese.** Every string in the UI now goes

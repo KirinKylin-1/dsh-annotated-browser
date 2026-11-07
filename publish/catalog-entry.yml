@@ -2,6 +2,6 @@ url: https://github.com/KirinKylin-1/dsh-annotated-browser
 name: KirinKylin-1/dsh-annotated-browser
 category: browser
 description:
-  en: A browser tab for DSH that renders pages on the host and lets you pick an element or drag a region, then send the note into the conversation.
-  zh: DSH 的浏览器标签：宿主渲染页面，点选元素或框选区域写批注，直接把备注发进当前对话。
+  en: A browser tab that renders pages through the host so CSP-framed sites still load, then lets you click an element or drag a region and send the notes into the conversation — with selectors, visible text and rectangles.
+  zh: 经宿主渲染的浏览器标签，禁止嵌入的站点也能打开；点选元素或框选区域，把批注连同选择器、可见文本和位置一并发进对话。
 icon: https://raw.githubusercontent.com/KirinKylin-1/dsh-annotated-browser/main/assets/icon-180.png
