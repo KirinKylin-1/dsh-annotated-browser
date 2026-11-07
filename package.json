@@ -1,6 +1,6 @@
 {
   "name": "dsh-annotated-browser",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "type": "module",
   "description": "Annotation for the DSH sidebar browser: render pages through a same-origin host proxy, then click an element or drag a region and send the note into the conversation.",
   "exports": {

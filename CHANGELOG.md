@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.3
+
+- Install section now leads with one verified one-liner: the GitHub Releases
+  tarball. Measured from a clean profile with no proxy: 9.4 s, no build, no git
+  history, no npm account. The git and (future) npm forms are listed after it.
+
 ## 1.2.2
 
 - Rewrote both READMEs to lead with what the plugin does and the problems it

@@ -46,23 +46,23 @@
 
 ## 安装
 
-从注册表（发布后）：
-
 ```sh
-dsh plugin --profile web add dsh-annotated-browser
-```
-
-从本仓库安装——不需要 npm 账号：
-
-```sh
-# 直接从 git 装
-dsh plugin --profile web add github:KirinKylin-1/dsh-annotated-browser
-
-# 或从 Release 附件装
-dsh plugin --profile web add https://github.com/KirinKylin-1/dsh-annotated-browser/releases/download/v1.0.0/dsh-annotated-browser-1.0.0.tgz
+dsh plugin --profile web add https://github.com/KirinKylin-1/dsh-annotated-browser/releases/download/v1.2.2/dsh-annotated-browser-1.2.2.tgz
 ```
 
 然后重启一次 `dsh web`（宿主半要加载），并刷新 GUI。
+
+**推荐就用这一条。** 它从 GitHub Releases 下载一个 273 KB 的预构建包——不用编译、不拉 git 历史、不需要 npm 账号。已在全新的 profile 里、不配置任何代理的情况下实测：**9.4 秒装完**。
+
+另外两种方式，按需选：
+
+```sh
+# 直接从 git 装（下载更大，从源码跑）
+dsh plugin --profile web add github:KirinKylin-1/dsh-annotated-browser
+
+# 从 npm 注册表装（发布后可用）
+dsh plugin --profile web add dsh-annotated-browser
+```
 
 **前提**：宿主机上要有 Chromium 系浏览器——Chrome、Chromium、Edge 都行。会自动探测（Windows / macOS / Linux 的常见路径，或 `CHROME_PATH` / `PUPPETEER_EXECUTABLE_PATH`）。探测不到就手动指定：
 

@@ -46,23 +46,23 @@ The collected list survives a reload: it is persisted per Session in `localStora
 
 ## Install
 
-From the registry (once published):
-
 ```sh
-dsh plugin --profile web add dsh-annotated-browser
-```
-
-From this repository — no npm account needed:
-
-```sh
-# straight from git
-dsh plugin --profile web add github:KirinKylin-1/dsh-annotated-browser
-
-# or from the release tarball
-dsh plugin --profile web add https://github.com/KirinKylin-1/dsh-annotated-browser/releases/download/v1.0.0/dsh-annotated-browser-1.0.0.tgz
+dsh plugin --profile web add https://github.com/KirinKylin-1/dsh-annotated-browser/releases/download/v1.2.2/dsh-annotated-browser-1.2.2.tgz
 ```
 
 Then restart `dsh web` once (the host half has to load) and refresh the GUI.
+
+**This is the recommended one-liner.** It downloads a prebuilt 273 KB tarball from GitHub Releases — no build step, no git history, no npm account. Verified end to end from a clean profile with no proxy configured: 9.4 s.
+
+Two alternatives, if you prefer:
+
+```sh
+# straight from git (larger download, runs from source)
+dsh plugin --profile web add github:KirinKylin-1/dsh-annotated-browser
+
+# from the npm registry, once published
+dsh plugin --profile web add dsh-annotated-browser
+```
 
 **Requirement:** a Chromium-based browser on the host machine — Chrome, Chromium or Edge all work. It is auto-detected (common Windows / macOS / Linux paths, or `CHROME_PATH` / `PUPPETEER_EXECUTABLE_PATH`). If detection fails, point at it explicitly:
 
